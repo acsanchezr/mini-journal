@@ -6,7 +6,9 @@ A Python desktop app to help you practice daily gratitude 🌸
 ## ✨ Features
 
 ✅ Write & save journal entries 📖
+
 ✅ View past entries whenever you need a mood boost 💕
+
 ✅ Simple, aesthetic design for a peaceful journaling experience
 
 
@@ -16,7 +18,9 @@ A Python desktop app to help you practice daily gratitude 🌸
 ```shell
 python mini-journal.py
 ```
+
 2️⃣ Type what you’re grateful for.
+
 3️⃣ Click "Save Entry".
 
 
@@ -29,4 +33,5 @@ Tkinter for UI design
 ## 💡 Future Improvements
 
 ✨ Add a search feature to find past entries.
+
 ✨ Option to delete entries.
