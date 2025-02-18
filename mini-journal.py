@@ -26,7 +26,6 @@ def save_entry():   #define function
 
 #load entries
 def load_entries():
-
     #Opens gratitude.txt in read mode ("r") and stores its contents in journal_text. If the file doesn’t exist yet, it sets "no entries yet!".
     try:
         with open("gratitude.txt","r") as f:
@@ -34,16 +33,23 @@ def load_entries():
     except FileNotFoundError:
         journal_text.set("no entries yet!")
 
+#delete all entries
+def del_all_entries():
+    try:
+        open("gratitude.txt","w").close()
+        load_entries()
+    except FileNotFoundError:
+        journal_text.set("no entries yet!")
 
 #create main window
 root = tk.Tk()
-root.title("💖 Mini journal 💖")
+root.title("⋆˚࿔ mini gratitude journal ⋆˚࿔")
 root.geometry("420x420")
 root.configure(bg="#fcebf3")
 
 #custom styling
 font_style = ("Arial",12)
-button_style = {"font":("Arial",11), "bg":"#6a994e", "fg": "white", "padx": 10, "pady": 5}
+button_style = {"font":("Arial",11), "fg": "white", "padx": 10, "pady": 5}
 
 # Create widgets with styles
 label = tk.Label(root, text="What are you grateful for today? 😊", font=font_style, bg="#fefae0", fg="#283618")
@@ -52,8 +58,11 @@ label.pack(pady=10)
 text_box = tk.Text(root, height=5, width=50, font=("Arial", 10), bg="#faedcd", fg="#283618")
 text_box.pack(pady=5)
 
-save_button = tk.Button(root, text="Save Entry", command=save_entry, **button_style)
+save_button = tk.Button(root, text="Save Entry", command=save_entry, bg="#6a994e", **button_style)
 save_button.pack(pady=5)
+
+del_all_button = tk.Button(root, text="Delete All", command=del_all_entries, bg="#b51d22", **button_style)
+del_all_button.pack(pady=5)
 
 journal_text = tk.StringVar()
 journal_label = tk.Label(root, textvariable=journal_text, wraplength=400, justify="left", font=("Arial", 10), bg="#fefae0", fg="#606c38")

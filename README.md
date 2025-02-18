@@ -1,6 +1,10 @@
-# 💖Mini Gratitude Journal💖
+# ⋆˚࿔ mini Gratitude Journal ⋆˚࿔
 
-A Python desktop app to help you practice daily gratitude 🌸
+♡₊˚ 🦢・₊✧
+
+A Python desktop app to help you practice daily gratitude
+
+♡₊˚ 🦢・₊✧
 
 
 ## ✨ Features
@@ -30,8 +34,6 @@ Python
 Tkinter for UI design
 
 
-## 💡 Future Improvements
-
-✨ Add a search feature to find past entries.
+## 🚧 In progress
 
 ✨ Option to delete entries.
