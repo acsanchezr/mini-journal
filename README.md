@@ -1,10 +1,6 @@
 # ⋆˚࿔ mini Gratitude Journal ⋆˚࿔
 
-♡₊˚ 🦢・₊✧
-
 A Python desktop app to help you practice daily gratitude
-
-♡₊˚ 🦢・₊✧
 
 
 ## ✨ Features
