@@ -8,6 +8,8 @@ from tkinter import ttk #is this not already included in tkinter?
 #datetime is a module in Python’s standard library that contains a datetime class. If you do import datetime, you’d have to write datetime.datetime.now() every time. By doing from datetime import datetime, you can just call datetime.now(), which is cleaner.
 from datetime import datetime #can i just do import datetime? what's the diff?
 
+import logging
+
 #save entry
 def save_entry():   #define function
     #Retrieves text from the text box starting from line 1, character 0 to the end.    
@@ -20,7 +22,7 @@ def save_entry():   #define function
             #The strftime() method returns a string representing date and time using date, time or datetime object.
             f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M')} - {entry}\n")
         text_box.delete("1.0", tk.END)  #text_box.delete("1.0", tk.END) → Clears the text box after saving.
-
+        logging.info("entry saved!")
         load_entries()
 
 
@@ -30,7 +32,9 @@ def load_entries():
     try:
         with open("gratitude.txt","r") as f:
             journal_text.set(f.read())
+        logging.info("entries loaded")
     except FileNotFoundError:
+        logging.error("no entries while displaying")
         journal_text.set("no entries yet!")
 
 #delete all entries
@@ -38,8 +42,13 @@ def del_all_entries():
     try:
         open("gratitude.txt","w").close()
         load_entries()
+        logging.info("delete all entries by writing to file")
     except FileNotFoundError:
         journal_text.set("no entries yet!")
+        logging.error("no entries while trying to delete all")
+
+
+logging.basicConfig(level=logging.DEBUG, filename="mini-journal.log", filemode="w")
 
 #create main window
 root = tk.Tk()
