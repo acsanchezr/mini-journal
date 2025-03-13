@@ -32,10 +32,10 @@ def save_entry():
         cur.execute("SELECT * FROM entries")
         rows = cur.fetchall()
 
-        for row in rows:
-            with open("gratitude.txt","a") as f:
-                rowstr = " ".join(str(row))
-                f.write(rowstr)
+        # for row in rows:
+        #     with open("gratitude.txt","a") as f:
+        #         rowstr = " ".join(str(row))
+        #         f.write(rowstr)
 
         load_entries()
         conn.commit()
@@ -80,10 +80,13 @@ try:
                 entry TEXT
                 )
                 ''')
+    
+    # debugging
     res = cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
     print(res.fetchall())
     res2 = cur.execute("PRAGMA table_info(entries);")
     print(res2.fetchall())
+
 except Exception as e:
     logging.error(f"something went wrong, error: {e}")
     print(f"something went wrong, error:{e}")
@@ -116,7 +119,7 @@ journal_text = tk.StringVar()
 journal_label = tk.Label(root, textvariable=journal_text, wraplength=400, justify="left", font=("Arial", 10), bg="#fefae0", fg="#606c38")
 journal_label.pack(pady=10)
 
-# Load existing entries
+# display existing entries upon opening app
 cur.execute("SELECT date, time, entry FROM entries")
 rows = cur.fetchall()
 
@@ -125,8 +128,6 @@ for row in rows:
         rowstr = " ".join(str(row))
         f.write(rowstr)
         load_entries()
-
-
 
 # Run the app
 root.mainloop()
