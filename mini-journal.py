@@ -1,30 +1,45 @@
 #import necessary libraries
-
+import sqlite3
 import tkinter as tk
+import sys
+import logging
 
 #Even though you import tkinter, ttk is a separate submodule that won’t be accessible unless you import it explicitly like from tkinter import ttk.
 from tkinter import ttk #is this not already included in tkinter?
 
-#datetime is a module in Python’s standard library that contains a datetime class. If you do import datetime, you’d have to write datetime.datetime.now() every time. By doing from datetime import datetime, you can just call datetime.now(), which is cleaner.
-from datetime import datetime #can i just do import datetime? what's the diff?
-
-import logging
+#If you do import datetime, you’d have to write datetime.datetime.now() every time. By doing from datetime import datetime, you can just call datetime.now(), which is cleaner.
+from datetime import datetime
 
 #save entry
-def save_entry():   #define function
+def save_entry():
+
+    conn = sqlite3.connect('gratitude-journal.db')
+    cur = conn.cursor()
+
     #Retrieves text from the text box starting from line 1, character 0 to the end.    
     #It is a constant, the literal string "end". In this context it represents the point immediately after the last character entered by the user. The function get on a text widget requires two values: a starting position and an ending position.
     entry = text_box.get("1.0", tk.END).strip() #Remove spaces at the beginning and at the end of the string
 
     if entry:
-        with open("gratitude.txt","a") as f: #Open for writing.  The file is created if it does not exist. 'a' = append to new entries do not overwrite old ones
+        now = datetime.now()
+        date_val = now.strftime('%Y-%m-%d')  # Formats as 'YYYY-MM-DD'
+        time_val = now.strftime('%H:%M:%S')
 
-            #The strftime() method returns a string representing date and time using date, time or datetime object.
-            f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M')} - {entry}\n")
-        text_box.delete("1.0", tk.END)  #text_box.delete("1.0", tk.END) → Clears the text box after saving.
-        logging.info("entry saved!")
+        cur.execute("INSERT INTO entries (date, time, entry) VALUES (?, ?, ?)",
+                    (date_val, time_val, entry))
+        
+            # Load existing entries
+        cur.execute("SELECT * FROM entries")
+        rows = cur.fetchall()
+
+        for row in rows:
+            with open("gratitude.txt","a") as f:
+                rowstr = " ".join(str(row))
+                f.write(rowstr)
+
         load_entries()
-
+        conn.commit()
+        conn.close()
 
 #load entries
 def load_entries():
@@ -48,7 +63,31 @@ def del_all_entries():
         logging.error("no entries while trying to delete all")
 
 
+
+# create log file to track info, errors, etc
 logging.basicConfig(level=logging.DEBUG, filename="mini-journal.log", filemode="w")
+
+try:   
+    # connect to sqlite db
+    conn = sqlite3.connect('gratitude-journal.db')
+    # create cursor object from cursor class
+    cur = conn.cursor()
+    # check if entries table exists, if not create it
+    cur.execute('''CREATE TABLE IF NOT EXISTS entries (
+                id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                date TEXT, 
+                time TEXT, 
+                entry TEXT
+                )
+                ''')
+    res = cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    print(res.fetchall())
+    res2 = cur.execute("PRAGMA table_info(entries);")
+    print(res2.fetchall())
+except Exception as e:
+    logging.error(f"something went wrong, error: {e}")
+    print(f"something went wrong, error:{e}")
+
 
 #create main window
 root = tk.Tk()
@@ -78,8 +117,21 @@ journal_label = tk.Label(root, textvariable=journal_text, wraplength=400, justif
 journal_label.pack(pady=10)
 
 # Load existing entries
-load_entries()
+cur.execute("SELECT date, time, entry FROM entries")
+rows = cur.fetchall()
+
+for row in rows:
+    with open("gratitude.txt","a") as f:
+        rowstr = " ".join(str(row))
+        f.write(rowstr)
+        load_entries()
+
+
 
 # Run the app
 root.mainloop()
+
+# commit and close connection
+conn.commit()
+conn.close()
 
